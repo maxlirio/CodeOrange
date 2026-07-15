@@ -28,7 +28,7 @@ const STYLES = {
   crossbow: { rot: [-0.12, Math.PI, 0], scale: 0.42, attack: 'shoot', bolt: true, pos: [0.3, -0.3, -0.58] },
   staff: { rot: [-0.35, Math.PI + 0.25, 0.3], scale: 0.4, attack: 'cast' },
   wand: { rot: [-0.55, Math.PI + 0.35, 0.15], scale: 0.45, attack: 'cast' },
-  bow: { rot: [0, 0, 0.12], scale: 0.85, attack: 'bowshoot', bow: true, pos: [0.3, -0.28, -0.6] },
+  bow: { rot: [0, 0, 0.16], scale: 0.5, attack: 'bowshoot', bow: true, pos: [0.33, -0.35, -0.58] },
   // generic per-verb styles: any new archetype resolves to one of these
   _slash: { rot: [-0.5, Math.PI + 0.45, 0.18], scale: 0.62, attack: 'slash' },
   _cleave: { rot: [-0.5, Math.PI + 0.45, 0.2], scale: 0.65, attack: 'cleave' },
@@ -37,7 +37,7 @@ const STYLES = {
   _smash: { rot: [-0.45, Math.PI + 0.4, 0.22], scale: 0.62, attack: 'smash' },
   _sweep: { rot: [-0.4, Math.PI + 0.55, 0.25], scale: 0.6, attack: 'sweep' },
   _shoot: { rot: [-0.12, Math.PI, 0], scale: 0.55, attack: 'shoot', bolt: true, pos: [0.3, -0.3, -0.58] },
-  _bowshoot: { rot: [0, 0, 0.12], scale: 0.62, attack: 'bowshoot', bow: true, packBow: true, pos: [0.3, -0.28, -0.6] },
+  _bowshoot: { rot: [0, 0, 0.16], scale: 0.42, attack: 'bowshoot', bow: true, packBow: true, pos: [0.33, -0.35, -0.58] },
   _cast: { rot: [-0.35, Math.PI + 0.25, 0.3], scale: 0.55, attack: 'cast' },
 };
 
