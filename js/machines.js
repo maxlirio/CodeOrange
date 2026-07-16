@@ -18,8 +18,8 @@ import { minions } from './minions.js';
 
 const CELL = 4;
 export const MACHINES = [
-  { id: 'turret', label: 'Bolt Turret', cost: 90, icon: '🏹', hp: 120, dmg: 9, range: 16, rate: 0.75, hint: 'fast bolts — needs a worker at the crank' },
-  { id: 'cannon', label: 'Cannon', cost: 160, icon: '💣', hp: 160, dmg: 26, range: 22, rate: 3.0, aoe: 3.4, hint: 'slow & splashy — needs a worker' },
+  { id: 'turret', label: 'Bolt Turret', cost: 90, icon: '', hp: 120, dmg: 9, range: 16, rate: 0.75, hint: 'fast bolts — needs a worker at the crank' },
+  { id: 'cannon', label: 'Cannon', cost: 160, icon: '', hp: 160, dmg: 26, range: 22, rate: 3.0, aoe: 3.4, hint: 'slow & splashy — needs a worker' },
 ];
 
 export const machineState = { on: false, idx: 0, ghost: null, ghostKey: '', valid: false, target: null };
@@ -80,9 +80,9 @@ function buildMachineVisual(kind) {
   const cx2 = c.getContext('2d');
   cx2.font = 'bold 26px Trebuchet MS'; cx2.textAlign = 'center';
   cx2.strokeStyle = '#000'; cx2.lineWidth = 5;
-  cx2.strokeText('⚠ no worker', 96, 30);
+  cx2.strokeText('no worker', 96, 30);
   cx2.fillStyle = '#ffcc55';
-  cx2.fillText('⚠ no worker', 96, 30);
+  cx2.fillText('no worker', 96, 30);
   const flag = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(c), transparent: true, depthTest: false }));
   flag.scale.set(2.0, 0.45, 1);
   flag.position.y = 2.5;
@@ -145,7 +145,7 @@ function removeMachine(rec) {
   rec.obj?.parent?.remove(rec.obj);
   // free its worker for the next machine
   for (const mn of minions) if (mn.workPost && mn.workPost.key === rec.key) mn.workPost = null;
-  if (rec.f === G.floor) addMsg('💥 A war machine is destroyed!', 'bad');
+  if (rec.f === G.floor) addMsg('A war machine is destroyed!', 'bad');
 }
 
 // ---------- machine-build mode (V) ----------
@@ -156,7 +156,7 @@ export function toggleMachineMode(force = null) {
   if (!want && machineState.ghost) { G.scene.remove(machineState.ghost); machineState.ghost = null; }
   if (want) {
     const mc = MACHINES[machineState.idx];
-    addMsg(`⚙ MACHINES — ${mc.label} (${mc.cost}g): ${mc.hint}. Scroll to switch, click to place, V to exit.`);
+    addMsg(`MACHINES — ${mc.label} (${mc.cost}g): ${mc.hint}. Scroll to switch, click to place, V to exit.`);
   }
 }
 
@@ -165,7 +165,7 @@ export function cycleMachine(dir) {
   machineState.idx = (machineState.idx + dir + MACHINES.length) % MACHINES.length;
   if (machineState.ghost) { G.scene.remove(machineState.ghost); machineState.ghost = null; }
   const mc = MACHINES[machineState.idx];
-  addMsg(`⚙ ${mc.label} — ${mc.cost}g · ${mc.hint}`);
+  addMsg(`${mc.label} — ${mc.cost}g · ${mc.hint}`);
 }
 
 export function updateMachineGhost() {
