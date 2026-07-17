@@ -94,8 +94,17 @@ export function refreshEquipVisuals() {
   const w = G.inv.weapon;
   // no rig mesh AND no held model (e.g. the ranger's procedural bow):
   // teammates would see empty hands — hold the drop model instead
-  const heldName = w ? (w.held || (!w.mesh?.length ? w.model : null)) : null;
-  const meshes = heldName ? [] : equippedMeshes(p.classId);
+  let heldName = w ? (w.held || (!w.mesh?.length ? w.model : null)) : null;
+  let meshes = heldName ? [] : equippedMeshes(p.classId);
+  // cross-discipline gear: this rig may not carry the other class's baked
+  // meshes — teammates would see empty hands. Hold the drop model instead.
+  if (!heldName && w?.mesh?.length) {
+    const has = (nm) => { let f = false; p.obj.traverse((n) => { if (n.name === nm) f = true; }); return f; };
+    if (!w.mesh.some(m => m !== 'OFFHAND' && has(m))) {
+      heldName = w.model;
+      meshes = meshes.filter(m => !w.mesh.includes(m)); // keep the offhand
+    }
+  }
   setEquipMeshes(p.obj, meshes);
   attachHeldWeapon(p.obj, heldName, w?.held2);
   setViewmodelWeapon(w?.model || WEAPON_TYPES[p.classId][0].model, w?.wtype || WEAPON_TYPES[p.classId][0].id, w?.verb, w?.sig);
@@ -138,6 +147,7 @@ function bannerMult() {
 export function effectiveDamage() {
   const p = G.player;
   let d = weaponDamage(p.cls) + G.run.atkBonus + (G.run.level - 1) * 2;
+  if (G.inv.weapon && G.inv.weapon.classId === p.classId) d *= 1.1; // native discipline
   if (p.buff) d *= p.buff.dmgMult;
   d *= bannerMult();
   return Math.round(d);

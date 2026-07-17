@@ -30,12 +30,19 @@ export function rollWeapon(classId, floor, luck = 0) {
   const RARITY_ORDER = ['common', 'fine', 'rare', 'epic', 'legendary'];
   const rIdx = RARITY_ORDER.indexOf(rarity.id);
   // some archetypes only appear at higher quality
-  const pool = WEAPON_TYPES[classId].filter(w => (w.minRarity || 0) <= rIdx);
+  // a third of finds come from ELSEWHERE in your discipline — the knight's
+  // chest can hold a bow; damage still scales off the finder's own training
+  let poolClass = classId;
+  if (Math.random() < 0.35) {
+    const kin = (CASTER_CLASSES.includes(classId) ? CASTER_CLASSES : MARTIALS).filter(c => c !== classId);
+    poolClass = pick(kin);
+  }
+  const pool = WEAPON_TYPES[poolClass].filter(w => (w.minRarity || 0) <= rIdx);
   const wt = pick(pool);
   const cls = CLASSES[classId];
   const dmg = Math.round(cls.dmg * rarity.mult * (wt.dmgBonus || 1) * (1 + 0.09 * (floor - 1)));
   const item = {
-    uid: uidCounter++, slot: 'weapon', classId, wtype: wt.id, mesh: wt.mesh, model: wt.model,
+    uid: uidCounter++, slot: 'weapon', classId: poolClass, wtype: wt.id, mesh: wt.mesh, model: wt.model,
     held: wt.held || null, held2: !!wt.held2, verb: wt.verb || 'slash',
     name: itemName(rarity, wt.noun), rarity: rarity.id, icon: wt.ranged ? '' : '',
     ranged: !!wt.ranged, atkTime: wt.atkTime || null,
@@ -146,12 +153,22 @@ export function addToBag(item) {
   return true;
 }
 
+// weapon disciplines: martial hands swap freely (a knight CAN carry a bow),
+// but casters shun steel and steel shuns spellwork
+const MARTIALS = ['knight', 'barbarian', 'rogue', 'ranger'];
+const CASTER_CLASSES = ['mage', 'necromancer'];
+const disciplineOf = (c) => CASTER_CLASSES.includes(c) ? 'caster' : 'martial';
+export function canEquipClass(item, classId) {
+  if (!item.classId) return true;
+  return disciplineOf(item.classId) === disciplineOf(classId);
+}
+
 export function equipItem(item, onChange) {
   let slot = item.slot;
   if (slot === 'trinket') {
     slot = !G.inv.trinket1 ? 'trinket1' : !G.inv.trinket2 ? 'trinket2' : 'trinket1';
   }
-  if (item.classId && item.classId !== G.player.classId) return false;
+  if (!canEquipClass(item, G.player.classId)) return false; // wrong discipline
   const idx = G.inv.bag.indexOf(item);
   if (idx >= 0) G.inv.bag.splice(idx, 1);
   const old = G.inv[slot];

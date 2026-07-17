@@ -1382,7 +1382,7 @@ export function killEnemy(e, source = 'local', fromNet = false) {
     G.run.gold += gold;
     G.run.kills++;
     gainXp(Math.round(e.cfg.xp * e.xpMult));
-    addMsg(`${e.boss ? 'Boss defeated!' : e.elite ? 'Elite destroyed!' : 'Skeleton destroyed'} +${gold}g`, e.boss || e.elite ? 'gold' : '');
+    addMsg(`${e.boss ? `${e.cfg.bossName || 'Boss'} defeated!` : `${e.elite ? 'Elite ' : ''}${e.cfg.name || e.cfg.model.replace(/_/g, ' ')} slain`} +${gold}g`, e.boss || e.elite ? 'gold' : '');
   }
   // item drops (authority rolls & shares the actual item)
   if (isAuthority() && !fromNet && source !== 'none') {
